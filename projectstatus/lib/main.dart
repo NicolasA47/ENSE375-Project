@@ -1,8 +1,9 @@
-import 'dart:html';
+import 'dart:developer';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:flutter/services.dart';
+import 'metric_model.dart';
 
 void main() {
   runApp(const MyApp());
@@ -28,35 +29,87 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.deepOrange,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Flutter Demo Home Page', metricList: [],),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key, required String title}) : super(key: key);
+class MyHomePage extends StatefulWidget {
+  List<MetricModel> metricList;
+  MyHomePage({Key? key, required String title, required this.metricList}) : super(key: key);
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  List<String> descriptions = [
+        "The number of defects are well below where expected",
+        "The number of defects are about where we expect",
+        "The number of defects are slightly above what is expected",
+        "The number of defects greatly exceed expectations"
+      ];
+  List<int> votes = [1, 4, 8, 10];
+  late MetricModel defaultMetric;
+  late MetricModel a;
+  late MetricModel b;
+  late MetricModel c;
+  @override
+    void initState(){
+      super.initState();
+      a = new MetricModel(projectGoal: "Total Number Of Defects", desc: descriptions,votes: votes );
+      b = new MetricModel(projectGoal: "Schedule Feasibility", desc: descriptions,votes: votes );
+      c = new MetricModel(projectGoal: "Design Progress", desc: descriptions,votes: votes );
+      defaultMetric = new MetricModel(projectGoal: "DEFAULT", desc: descriptions,votes: votes );
+      widget.metricList = [a,b,c];
+      print("INASDIASNDIANSDIA");
+    }
 
   @override
   Widget build(BuildContext context) {
+    
+      List<MetricModel> list = [a,b,c];
+      
     return Scaffold(
         appBar: AppBar(
           title: Text("Project Status Indicator"),
         ),
-        body: SingleChildScrollView(
-          child: Column(
+        body: (
+           Column(
             children: [
-              goalContainer(projectGoal: "Total Number Of Defects"),
-              goalContainer(projectGoal: "Schedule Feasibility"),
-              goalContainer(projectGoal: "Design Progress")
+              TextButton(
+                style: ButtonStyle(
+                  overlayColor: MaterialStateProperty.resolveWith<Color?>(
+                    (Set<MaterialState> states) {
+                      if (states.contains(MaterialState.focused))
+                        return Colors.red;
+                      return null; // Defer to the widget's default.
+                    }
+                  ),
+                ),
+                onPressed: () => setState(() => {print(widget.metricList), widget.metricList.add(defaultMetric), print(widget.metricList)}),
+                child: Text('ADD ME DAD'),
+              ),
+              Expanded(
+              child: 
+              ListView.builder(
+                itemCount: widget.metricList.length,
+                itemBuilder: (context, index){
+                  return goalContainer(metric: widget.metricList[index]);
+                }
+                )
+              ),
+              
+              //for (int i = 0; i < metricList.length; i++) goalContainer(metric: metricList[i]),
             ],
-          ),
+          )
         ));
   }
 }
 
 class goalContainer extends StatefulWidget {
-  String projectGoal;
-  goalContainer({Key? key, required this.projectGoal}) : super(key: key);
+  MetricModel metric;
+  goalContainer({Key? key, required this.metric}) : super(key: key);
 
   @override
   State<goalContainer> createState() => _goalContainerState();
@@ -69,13 +122,6 @@ class _goalContainerState extends State<goalContainer> {
     "Reasonable Risk",
     "High Risk"
   ];
-  List<String> descriptions = [
-    "The number of defects are well below where expected",
-    "The number of defects are about where we expect",
-    "The number of defects are slightly above what is expected",
-    "The number of defects greatly exceed expectations"
-  ];
-  List<int> votes = [0, 0, 0, 0];
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +139,7 @@ class _goalContainerState extends State<goalContainer> {
                 flex: 45,
                 child: SizedBox(
                   child: TextFormField(
-                    initialValue: widget.projectGoal,
+                    initialValue: widget.metric.projectGoal,
                     enabled: false,
                     decoration: const InputDecoration(
                       labelText: "Project Goal",
@@ -114,7 +160,7 @@ class _goalContainerState extends State<goalContainer> {
                 child: SizedBox(
                   child: Icon(
                     Icons.circle,
-                    color: getStatusColor(votes),
+                    color: getStatusColor(widget.metric.votes),
                     size: 50,
                   ),
                 ),
@@ -128,9 +174,9 @@ class _goalContainerState extends State<goalContainer> {
                 for (int i = 0; i < 4; i++)
                   SubGoalContainer(
                       index: i,
-                      description: descriptions[i],
+                      description: widget.metric.desc[i],
                       riskLevel: riskLevels[i],
-                      voteCount: votes[i])
+                      voteCount: widget.metric.votes[i])
               ],
             ),
           ),
