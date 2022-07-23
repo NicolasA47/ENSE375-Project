@@ -83,11 +83,44 @@ class _goalContainerState extends State<goalContainer> {
       child: SizedBox(
         width: (MediaQuery.of(context).size.width) * 0.55,
         child: GFAccordion(
-          title: "${widget.projectGoal}",
           collapsedIcon: const Icon(Icons.arrow_left_rounded),
           expandedIcon: Transform.rotate(
               angle: -90 * pi / 180,
               child: const Icon(Icons.arrow_left_rounded)),
+          titleChild: Row(
+            children: [
+              Expanded(
+                flex: 45,
+                child: SizedBox(
+                  child: TextFormField(
+                    initialValue: widget.projectGoal,
+                    enabled: false,
+                    decoration: const InputDecoration(
+                      labelText: "Project Goal",
+                    ),
+                  ),
+                ),
+              ),
+              const Expanded(
+                flex: 25,
+                child: SizedBox(),
+              ),
+              const Expanded(
+                flex: 15,
+                child: SizedBox(child: Text("Metric Status")),
+              ),
+              Expanded(
+                flex: 15,
+                child: SizedBox(
+                  child: Icon(
+                    Icons.circle,
+                    color: getStatusColor(votes),
+                    size: 50,
+                  ),
+                ),
+              ),
+            ],
+          ),
           contentChild: SingleChildScrollView(
             padding: const EdgeInsets.all(12),
             child: Column(
@@ -193,8 +226,31 @@ class _SubGoalContainerState extends State<SubGoalContainer> {
   }
 }
 
-Color getStatusColor(int riskLevel) {
+Color getStatusColor(List<int> voteList) {
   Color statusColor;
+  int totalVotes = 0;
+  double riskLevel = 0;
+
+  for (int i = 0; i < voteList.length; i++) {
+    switch (i) {
+      case 0:
+        totalVotes += voteList[i];
+        break;
+      case 1:
+        totalVotes += voteList[i];
+        riskLevel += voteList[i] / 3;
+        break;
+      case 2:
+        totalVotes += voteList[i];
+        riskLevel += voteList[i] * 2 / 3;
+        break;
+      case 3:
+        totalVotes += voteList[i];
+        riskLevel += voteList[i] / 3;
+        break;
+    }
+  }
+  riskLevel = riskLevel / totalVotes;
   if (riskLevel < 1 / 3) {
     statusColor = Colors.green;
   } else if (riskLevel > 2 / 3) {
