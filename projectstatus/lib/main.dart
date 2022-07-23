@@ -33,29 +33,30 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+class MyHomePage extends StatelessWidget {
+  const MyHomePage({Key? key, required String title}) : super(key: key);
 
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Project Status Indicator"),
-      ),
-      body: goalContainer(),
-    );
+        appBar: AppBar(
+          title: Text("Project Status Indicator"),
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              goalContainer(projectGoal: "Total Number Of Defects"),
+              goalContainer(projectGoal: "Schedule Feasibility"),
+              goalContainer(projectGoal: "Design Progress")
+            ],
+          ),
+        ));
   }
 }
 
 class goalContainer extends StatefulWidget {
-  const goalContainer({Key? key}) : super(key: key);
+  String projectGoal;
+  goalContainer({Key? key, required this.projectGoal}) : super(key: key);
 
   @override
   State<goalContainer> createState() => _goalContainerState();
@@ -75,13 +76,14 @@ class _goalContainerState extends State<goalContainer> {
     "The number of defects greatly exceed expectations"
   ];
   List<int> votes = [0, 0, 0, 0];
+
   @override
   Widget build(BuildContext context) {
     return Center(
       child: SizedBox(
         width: (MediaQuery.of(context).size.width) * 0.55,
         child: GFAccordion(
-          title: 'Project goal',
+          title: "${widget.projectGoal}",
           collapsedIcon: const Icon(Icons.arrow_left_rounded),
           expandedIcon: Transform.rotate(
               angle: -90 * pi / 180,
@@ -90,7 +92,12 @@ class _goalContainerState extends State<goalContainer> {
             padding: const EdgeInsets.all(12),
             child: Column(
               children: [
-                for (int i = 0; i < 4; i++) SubGoalContainer(index: i)
+                for (int i = 0; i < 4; i++)
+                  SubGoalContainer(
+                      index: i,
+                      description: descriptions[i],
+                      riskLevel: riskLevels[i],
+                      voteCount: votes[i])
               ],
             ),
           ),
@@ -101,38 +108,41 @@ class _goalContainerState extends State<goalContainer> {
 }
 
 class SubGoalContainer extends StatefulWidget {
-  final int index;
-  const SubGoalContainer({Key? key, required this.index}) : super(key: key);
+  int index;
+  String riskLevel;
+  String description;
+  int voteCount;
+  SubGoalContainer(
+      {Key? key,
+      required this.index,
+      required this.description,
+      required this.riskLevel,
+      required this.voteCount})
+      : super(key: key);
 
   @override
   State<SubGoalContainer> createState() => _SubGoalContainerState();
 }
 
 class _SubGoalContainerState extends State<SubGoalContainer> {
-  TextEditingController voteCount = TextEditingController(text: "0");
-  List<String> riskLevels = [
-    "Mininmal Risk",
-    "Low Risk",
-    "Reasonable Risk",
-    "High Risk"
-  ];
-  List<String> descriptions = [
-    "The number of defects are well below where expected",
-    "The number of defects are about where we expect",
-    "The number of defects are slightly above what is expected",
-    "The number of defects greatly exceed expectations"
-  ];
+  TextEditingController desc = TextEditingController();
+  TextEditingController votes = TextEditingController();
+
   void updateFieldValue() {
     setState(() {
-      print(voteCount.text);
+      widget.description = desc.text;
+      widget.voteCount = int.parse(votes.text);
     });
   }
 
   @override
   void initState() {
     super.initState();
-    voteCount = TextEditingController(text: "0");
-    voteCount.addListener(updateFieldValue);
+    votes = TextEditingController(text: "${widget.voteCount}");
+    votes.addListener(updateFieldValue);
+
+    desc = TextEditingController(text: widget.description);
+    desc.addListener(updateFieldValue);
   }
 
   @override
@@ -144,7 +154,8 @@ class _SubGoalContainerState extends State<SubGoalContainer> {
             flex: 25,
             child: SizedBox(
               child: TextFormField(
-                initialValue: riskLevels[widget.index],
+                initialValue: widget.riskLevel,
+                enabled: false,
                 decoration: const InputDecoration(
                   labelText: "Risk Level",
                 ),
@@ -155,7 +166,7 @@ class _SubGoalContainerState extends State<SubGoalContainer> {
             flex: 65,
             child: SizedBox(
                 child: TextFormField(
-              initialValue: descriptions[widget.index],
+              controller: desc,
               decoration: const InputDecoration(
                 labelText: "Description",
               ),
@@ -165,7 +176,7 @@ class _SubGoalContainerState extends State<SubGoalContainer> {
               flex: 10,
               child: SizedBox(
                 child: TextFormField(
-                  controller: voteCount,
+                  controller: votes,
                   keyboardType: TextInputType.number,
                   inputFormatters: <TextInputFormatter>[
                     FilteringTextInputFormatter.digitsOnly
