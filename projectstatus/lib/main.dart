@@ -169,18 +169,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: ListView.builder(
                     itemCount: metricList.length,
                     itemBuilder: (context, index) {
-                      return Card(
-                        child: Column(
-                          children: [
+                      return
                             goalContainer(
                                 updateParent: updateState,
                                 metricIndex: index,
                                 metric: metricList[index],
-                                metricList: metricList),
-                            // deleteButton(metricList[index])
-                          ],
-                        ),
-                      );
+                                metricList: metricList);
+                        
                     })),
           ],
         )));
