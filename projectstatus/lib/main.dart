@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.teal,
+        primarySwatch: Colors.blueGrey,
       ),
       home: MyHomePage(
         title: 'Flutter Demo Home Page',
@@ -169,13 +169,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: ListView.builder(
                     itemCount: metricList.length,
                     itemBuilder: (context, index) {
-                      return
-                            goalContainer(
-                                updateParent: updateState,
-                                metricIndex: index,
-                                metric: metricList[index],
-                                metricList: metricList);
-                        
+                      return goalContainer(
+                          updateParent: updateState,
+                          metricIndex: index,
+                          metric: metricList[index],
+                          metricList: metricList);
                     })),
           ],
         )));
@@ -232,8 +230,8 @@ class _goalContainerState extends State<goalContainer> {
           textStyle: const TextStyle(color: Color(0xFFD8D8D8)),
           contentPadding: const EdgeInsets.all(25),
           expandedTitleBackgroundColor: const Color(0xFFA1CDEB),
-          collapsedTitleBackgroundColor: const Color(0xFFA4F1DA),
-          contentBackgroundColor: const Color(0xFFA4F1DA),
+          collapsedTitleBackgroundColor: const Color(0xFF9FC5CC),
+          contentBackgroundColor: const Color(0xFF9FC5CC),
           titleBorderRadius: const BorderRadius.all(Radius.circular(15)),
           contentBorderRadius: const BorderRadius.all(Radius.circular(15)),
           collapsedIcon: const Icon(Icons.arrow_left_rounded),
