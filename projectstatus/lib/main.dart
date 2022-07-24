@@ -5,6 +5,8 @@ import 'package:getwidget/getwidget.dart';
 import 'package:flutter/services.dart';
 import 'metric_model.dart';
 
+late List<MetricModel> metricList;
+
 void main() {
   runApp(const MyApp());
 }
@@ -29,14 +31,13 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.deepOrange,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page', metricList: [],),
+      home: MyHomePage(title: 'Flutter Demo Home Page',),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  List<MetricModel> metricList;
-  MyHomePage({Key? key, required String title, required this.metricList}) : super(key: key);
+  MyHomePage({Key? key, required String title,}) : super(key: key);
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -51,28 +52,51 @@ class _MyHomePageState extends State<MyHomePage> {
       ];
   List<int> votes = [1, 4, 8, 10];
   late MetricModel defaultMetric;
-  late MetricModel a;
-  late MetricModel b;
-  late MetricModel c;
+
   @override
     void initState(){
       super.initState();
-      a = new MetricModel(projectGoal: "Total Number Of Defects", desc: descriptions,votes: votes );
-      b = new MetricModel(projectGoal: "Schedule Feasibility", desc: descriptions,votes: votes );
-      c = new MetricModel(projectGoal: "Design Progress", desc: descriptions,votes: votes );
-      defaultMetric = new MetricModel(projectGoal: "DEFAULT", desc: descriptions,votes: votes );
-      widget.metricList = [a,b,c];
-      print("INASDIASNDIANSDIA");
+      defaultMetric = MetricModel(projectGoal: "DEFAULT", desc: descriptions,votes: votes );
+      metricList = [
+        MetricModel(projectGoal: "Total Number Of Defects", desc: <String>[
+          "The number of defects are well below where expected",
+          "The number of defects are about where we expect",
+          "The number of defects are slightly above what is expected",
+          "The number of defects greatly exceed expectations"], 
+          votes: <int>[3,4,8,9]),
+        MetricModel(projectGoal: "Schedule feasibility", desc: <String>[
+          "The project can be easily completed in the scheduled time",
+          "The project can be completed in the scheduled time with strict time management",
+          "The project may be completed in the scheduled time, but will require crunch",
+          "The project is unlikely to be completed in the scheduled time"], 
+          votes: <int>[7,8,7,2]),
+          MetricModel(projectGoal: "Design progress", desc: <String>[
+          "The design is complete",
+          "The design is mostly complete and no major problems are noted",
+          "The design is incomplete and one major problem is noted with strategies to mitigate",
+          "The design is incomplete, has several major problems with no plans to mitigate"], 
+          votes: <int>[11,6,6,1]),
+          MetricModel(projectGoal: "Implementation progress", desc: <String>[
+          "The implementation is ahead of schedule",
+          "The implementation is on schedule",
+          "The implementation is slightly behind schedule",
+          "The implementation is far behind schedule"], 
+          votes: <int>[5,6,5,6]),
+          MetricModel(projectGoal: "Integration progress", desc: <String>[
+          "No major integration problems have been detected",
+          "Minor integration problems have been detected",
+          "At least one major integration problem has been detected, with plans to remedy",
+          "Multiple major integration problems have been detected, with no plans to remedy"], 
+          votes: <int>[9,8,7,0])
+        ];
     }
 
   @override
   Widget build(BuildContext context) {
-    
-      List<MetricModel> list = [a,b,c];
       
     return Scaffold(
         appBar: AppBar(
-          title: Text("Project Status Indicator"),
+          title: const Text("Project Status Indicator"),
         ),
         body: (
            Column(
@@ -81,50 +105,67 @@ class _MyHomePageState extends State<MyHomePage> {
                 style: ButtonStyle(
                   overlayColor: MaterialStateProperty.resolveWith<Color?>(
                     (Set<MaterialState> states) {
-                      if (states.contains(MaterialState.focused))
+                      if (states.contains(MaterialState.focused)) {
                         return Colors.red;
+                      }
                       return null; // Defer to the widget's default.
                     }
                   ),
                 ),
-                onPressed: () => setState(() => {print(widget.metricList), widget.metricList.add(defaultMetric), print(widget.metricList)}),
-                child: Text('ADD ME DAD'),
+                onPressed: () => setState(() => metricList.add(defaultMetric)),
+                child: const Text('ADD GOAL'),
               ),
               Expanded(
               child: 
               ListView.builder(
-                itemCount: widget.metricList.length,
+                itemCount: metricList.length,
                 itemBuilder: (context, index){
-                  return goalContainer(metric: widget.metricList[index]);
+                  return Card(
+                    child: Column(children: [
+                      goalContainer(metric: metricList[index], metricList: metricList),
+                      deleteButton(metricList[index])
+                    ],),
+                  );
                 }
                 )
               ),
               
-              //for (int i = 0; i < metricList.length; i++) goalContainer(metric: metricList[i]),
             ],
           )
         ));
+  }
+
+  Widget deleteButton(MetricModel metric){
+    return TextButton(
+      style: ButtonStyle(
+        overlayColor: MaterialStateProperty.resolveWith<Color?>(
+          (Set<MaterialState> states) {
+            if (states.contains(MaterialState.focused)) {
+              return Colors.red;
+            }
+            return null; // Defer to the widget's default.
+          }
+        ),
+      ),
+      onPressed: () => setState(() => {metricList.remove(metric)}),
+      child: const Text('DELETE'),
+    );
   }
 }
 
 class goalContainer extends StatefulWidget {
   MetricModel metric;
-  goalContainer({Key? key, required this.metric}) : super(key: key);
+  List<MetricModel> metricList;
+  goalContainer({Key? key, required this.metric, required this.metricList}) : super(key: key);
 
   @override
   State<goalContainer> createState() => _goalContainerState();
 }
 
 class _goalContainerState extends State<goalContainer> {
-  List<String> riskLevels = [
-    "Mininmal Risk",
-    "Low Risk",
-    "Reasonable Risk",
-    "High Risk"
-  ];
-
   @override
   Widget build(BuildContext context) {
+  Color statusColor = getStatusColor(widget.metric.votes);
     return Center(
       child: SizedBox(
         width: (MediaQuery.of(context).size.width) * 0.55,
@@ -160,7 +201,7 @@ class _goalContainerState extends State<goalContainer> {
                 child: SizedBox(
                   child: Icon(
                     Icons.circle,
-                    color: getStatusColor(widget.metric.votes),
+                    color: statusColor,
                     size: 50,
                   ),
                 ),
@@ -175,7 +216,6 @@ class _goalContainerState extends State<goalContainer> {
                   SubGoalContainer(
                       index: i,
                       description: widget.metric.desc[i],
-                      riskLevel: riskLevels[i],
                       voteCount: widget.metric.votes[i])
               ],
             ),
@@ -184,18 +224,18 @@ class _goalContainerState extends State<goalContainer> {
       ),
     );
   }
+
+  
 }
 
 class SubGoalContainer extends StatefulWidget {
   int index;
-  String riskLevel;
   String description;
   int voteCount;
   SubGoalContainer(
       {Key? key,
       required this.index,
       required this.description,
-      required this.riskLevel,
       required this.voteCount})
       : super(key: key);
 
@@ -227,27 +267,15 @@ class _SubGoalContainerState extends State<SubGoalContainer> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Row(
+      child:
+      Row(
         children: [
-          Expanded(
-            flex: 25,
-            child: SizedBox(
-              child: TextFormField(
-                initialValue: widget.riskLevel,
-                enabled: false,
-                decoration: const InputDecoration(
-                  labelText: "Risk Level",
-                ),
-              ),
-            ),
-          ),
           Expanded(
             flex: 65,
             child: SizedBox(
                 child: TextFormField(
               controller: desc,
               decoration: const InputDecoration(
-                labelText: "Description",
               ),
             )),
           ),
@@ -262,7 +290,6 @@ class _SubGoalContainerState extends State<SubGoalContainer> {
                   ],
                   decoration: const InputDecoration(
                     prefixIcon: Icon(Icons.person_outline_rounded),
-                    labelText: "Votes",
                   ),
                 ),
               )),
@@ -292,7 +319,7 @@ Color getStatusColor(List<int> voteList) {
         break;
       case 3:
         totalVotes += voteList[i];
-        riskLevel += voteList[i] / 3;
+        riskLevel += voteList[i];
         break;
     }
   }
