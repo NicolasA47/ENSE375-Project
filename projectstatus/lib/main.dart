@@ -44,19 +44,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<String> descriptions = [
-        "The number of defects are well below where expected",
-        "The number of defects are about where we expect",
-        "The number of defects are slightly above what is expected",
-        "The number of defects greatly exceed expectations"
-      ];
-  List<int> votes = [1, 4, 8, 10];
-  late MetricModel defaultMetric;
-
+  MetricModel defaultMetric = MetricModel(projectGoal: "Default Project Goal", desc: ["Default","Default","Default","Default"], votes: [0,0,0,0], 
+  statusColor: Color(0xFF388E3C));
   @override
     void initState(){
       super.initState();
-      defaultMetric = MetricModel(projectGoal: "DEFAULT", desc: descriptions,votes: votes );
       metricList = [
         MetricModel(projectGoal: "Total Number Of Defects", desc: <String>[
           "The number of defects are well below where expected",
@@ -122,7 +114,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 itemBuilder: (context, index){
                   return Card(
                     child: Column(children: [
-                      goalContainer(metric: metricList[index], metricList: metricList),
+                      goalContainer(metricIndex: index, metric: metricList[index], metricList: metricList),
                       deleteButton(metricList[index])
                     ],),
                   );
@@ -154,18 +146,26 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class goalContainer extends StatefulWidget {
+  int metricIndex;
   MetricModel metric;
   List<MetricModel> metricList;
-  goalContainer({Key? key, required this.metric, required this.metricList}) : super(key: key);
+  goalContainer({Key? key,required this.metricIndex, required this.metric, required this.metricList}) : super(key: key);
 
   @override
   State<goalContainer> createState() => _goalContainerState();
 }
 
 class _goalContainerState extends State<goalContainer> {
+
+  updateState(){
+    setState(() {
+      
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-  Color statusColor = getStatusColor(widget.metric.votes);
+  widget.metric.statusColor = getStatusColor(widget.metric.votes);
     return Center(
       child: SizedBox(
         width: (MediaQuery.of(context).size.width) * 0.55,
@@ -201,7 +201,7 @@ class _goalContainerState extends State<goalContainer> {
                 child: SizedBox(
                   child: Icon(
                     Icons.circle,
-                    color: statusColor,
+                    color: widget.metric.statusColor,
                     size: 50,
                   ),
                 ),
@@ -214,9 +214,11 @@ class _goalContainerState extends State<goalContainer> {
               children: [
                 for (int i = 0; i < 4; i++)
                   SubGoalContainer(
+                      metricIndex: widget.metricIndex,
                       index: i,
                       description: widget.metric.desc[i],
-                      voteCount: widget.metric.votes[i])
+                      voteCount: widget.metric.votes[i],
+                      updateParent: updateState,)
               ],
             ),
           ),
@@ -229,14 +231,18 @@ class _goalContainerState extends State<goalContainer> {
 }
 
 class SubGoalContainer extends StatefulWidget {
+  int metricIndex;
   int index;
   String description;
   int voteCount;
+  Function updateParent;
   SubGoalContainer(
       {Key? key,
+      required this.metricIndex,
       required this.index,
       required this.description,
-      required this.voteCount})
+      required this.voteCount,
+      required this.updateParent()})
       : super(key: key);
 
   @override
@@ -251,6 +257,11 @@ class _SubGoalContainerState extends State<SubGoalContainer> {
     setState(() {
       widget.description = desc.text;
       widget.voteCount = int.parse(votes.text);
+      metricList.elementAt(widget.metricIndex).votes[widget.index] = widget.voteCount;
+      metricList.elementAt(widget.metricIndex).desc[widget.index] = widget.description;
+      metricList.elementAt(widget.metricIndex).statusColor = getStatusColor(metricList.elementAt(widget.metricIndex).votes);
+      widget.updateParent();
+      print(metricList.elementAt(widget.metricIndex).statusColor);
     });
   }
 
