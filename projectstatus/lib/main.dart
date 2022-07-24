@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'metric_model.dart';
 
 late List<MetricModel> metricList;
+Color? totalRiskColor;
 
 void main() {
   runApp(const MyApp());
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Project Status Indicator',
+      title: 'Risk Management',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.deepOrange,
+        primarySwatch: Colors.blueGrey,
       ),
       home: MyHomePage(title: 'Flutter Demo Home Page',),
     );
@@ -44,6 +45,13 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
+  updateState(){
+    setState(() {
+      
+    });
+  }
+
   MetricModel defaultMetric = MetricModel(projectGoal: "Default Project Goal", desc: ["Default","Default","Default","Default"], votes: [0,0,0,0], 
   statusColor: Color(0xFF388E3C));
   @override
@@ -88,11 +96,23 @@ class _MyHomePageState extends State<MyHomePage> {
       
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Project Status Indicator"),
+          title: const Text("Risk Management"),
         ),
         body: (
            Column(
             children: [
+              Row(children: [
+              const SizedBox(child: Text("Metric Status")),
+              Expanded(
+                flex: 15,
+                child: SizedBox(
+                  child: Icon(
+                    Icons.circle,
+                    color: totalRiskColor = totalRisk(),
+                    size: 50,
+                  ),
+                ),
+              ),
               TextButton(
                 style: ButtonStyle(
                   overlayColor: MaterialStateProperty.resolveWith<Color?>(
@@ -107,6 +127,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: () => setState(() => metricList.add(defaultMetric)),
                 child: const Text('ADD GOAL'),
               ),
+              ],),
               Expanded(
               child: 
               ListView.builder(
@@ -114,7 +135,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 itemBuilder: (context, index){
                   return Card(
                     child: Column(children: [
-                      goalContainer(metricIndex: index, metric: metricList[index], metricList: metricList),
+                      goalContainer(updateParent: updateState,metricIndex: index, metric: metricList[index], metricList: metricList),
                       deleteButton(metricList[index])
                     ],),
                   );
@@ -146,10 +167,11 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class goalContainer extends StatefulWidget {
+  Function updateParent;
   int metricIndex;
   MetricModel metric;
   List<MetricModel> metricList;
-  goalContainer({Key? key,required this.metricIndex, required this.metric, required this.metricList}) : super(key: key);
+  goalContainer({Key? key,required this.updateParent(),required this.metricIndex, required this.metric, required this.metricList}) : super(key: key);
 
   @override
   State<goalContainer> createState() => _goalContainerState();
@@ -161,6 +183,7 @@ class _goalContainerState extends State<goalContainer> {
     setState(() {
       
     });
+    widget.updateParent();
   }
 
   @override
@@ -180,8 +203,7 @@ class _goalContainerState extends State<goalContainer> {
                 flex: 45,
                 child: SizedBox(
                   child: TextFormField(
-                    initialValue: widget.metric.projectGoal,
-                    enabled: false,
+                    initialValue: metricList.elementAt(widget.metricIndex).projectGoal,
                     decoration: const InputDecoration(
                       labelText: "Project Goal",
                     ),
@@ -260,6 +282,7 @@ class _SubGoalContainerState extends State<SubGoalContainer> {
       metricList.elementAt(widget.metricIndex).votes[widget.index] = widget.voteCount;
       metricList.elementAt(widget.metricIndex).desc[widget.index] = widget.description;
       metricList.elementAt(widget.metricIndex).statusColor = getStatusColor(metricList.elementAt(widget.metricIndex).votes);
+      totalRiskColor = totalRisk();
       widget.updateParent();
       print(metricList.elementAt(widget.metricIndex).statusColor);
     });
@@ -343,4 +366,48 @@ Color getStatusColor(List<int> voteList) {
     statusColor = Colors.yellow;
   }
   return statusColor;
+}
+
+Color totalRisk(){
+  double totalRisk = 0;
+  for (int i = 0; i < metricList.length; i++){
+    totalRisk += calculateRisk(metricList[i].votes);
+  }
+  totalRisk /= metricList.length;
+  Color statusColor;
+  if (totalRisk < 1 / 3) {
+    statusColor = Colors.green;
+  } else if (totalRisk > 2 / 3) {
+    statusColor = Colors.red;
+  } else {
+    statusColor = Colors.yellow;
+  }
+  return statusColor;
+}
+
+double calculateRisk(List<int> voteList){
+  int totalVotes = 0;
+  double riskLevel = 0;
+
+  for (int i = 0; i < voteList.length; i++) {
+    switch (i) {
+      case 0:
+        totalVotes += voteList[i];
+        break;
+      case 1:
+        totalVotes += voteList[i];
+        riskLevel += voteList[i] / 3;
+        break;
+      case 2:
+        totalVotes += voteList[i];
+        riskLevel += voteList[i] * 2 / 3;
+        break;
+      case 3:
+        totalVotes += voteList[i];
+        riskLevel += voteList[i];
+        break;
+    }
+  }
+  riskLevel = riskLevel / totalVotes;
+  return riskLevel;
 }
