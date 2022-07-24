@@ -99,7 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
            Column(
             children: [
               Row(children: [
-              const SizedBox(child: Text("Metric Status")),
+              const SizedBox(child: Text("Overall Risk Status")),
               Expanded(
                 flex: 15,
                 child: SizedBox(
@@ -133,7 +133,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   return Card(
                     child: Column(children: [
                       goalContainer(updateParent: updateState,metricIndex: index, metric: metricList[index], metricList: metricList),
-                      //deleteButton(metricList[index])
                     ],),
                   );
                 }
@@ -143,23 +142,6 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           )
         ));
-  }
-
-  Widget deleteButton(MetricModel metric){
-    return TextButton(
-      style: ButtonStyle(
-        overlayColor: MaterialStateProperty.resolveWith<Color?>(
-          (Set<MaterialState> states) {
-            if (states.contains(MaterialState.focused)) {
-              return Colors.red;
-            }
-            return null; // Defer to the widget's default.
-          }
-        ),
-      ),
-      onPressed: () => setState(() => {metricList.remove(metric), updateState()}),
-      child: const Text('DELETE'),
-    );
   }
 }
 
