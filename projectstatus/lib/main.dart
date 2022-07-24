@@ -51,9 +51,6 @@ class _MyHomePageState extends State<MyHomePage> {
       
     });
   }
-
-  MetricModel defaultMetric = MetricModel(projectGoal: "Default Project Goal", desc: ["Default","Default","Default","Default"], votes: [0,0,0,0], 
-  statusColor: Color(0xFF388E3C));
   @override
     void initState(){
       super.initState();
@@ -124,7 +121,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     }
                   ),
                 ),
-                onPressed: () => setState(() => metricList.add(defaultMetric)),
+                onPressed: (() => { metricList.add(MetricModel(projectGoal: "Default Project Goal", desc: ["Default","Default","Default","Default"], votes: [0,0,0,0],statusColor: Color(0xFF388E3C))), updateState()}),
                 child: const Text('ADD GOAL'),
               ),
               ],),
@@ -136,7 +133,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   return Card(
                     child: Column(children: [
                       goalContainer(updateParent: updateState,metricIndex: index, metric: metricList[index], metricList: metricList),
-                      deleteButton(metricList[index])
+                      //deleteButton(metricList[index])
                     ],),
                   );
                 }
@@ -160,7 +157,7 @@ class _MyHomePageState extends State<MyHomePage> {
           }
         ),
       ),
-      onPressed: () => setState(() => {metricList.remove(metric)}),
+      onPressed: () => setState(() => {metricList.remove(metric), updateState()}),
       child: const Text('DELETE'),
     );
   }
@@ -178,6 +175,19 @@ class goalContainer extends StatefulWidget {
 }
 
 class _goalContainerState extends State<goalContainer> {
+  TextEditingController projectGoalName = TextEditingController();
+  void updateFieldValue() {
+      setState(() {
+        widget.metric.projectGoal = projectGoalName.text;
+      });
+    }
+
+  @override
+  void initState() {
+    super.initState();
+    projectGoalName = TextEditingController(text: widget.metric.projectGoal);
+    
+  }
 
   updateState(){
     setState(() {
@@ -203,7 +213,7 @@ class _goalContainerState extends State<goalContainer> {
                 flex: 45,
                 child: SizedBox(
                   child: TextFormField(
-                    initialValue: metricList.elementAt(widget.metricIndex).projectGoal,
+                    controller: projectGoalName,
                     decoration: const InputDecoration(
                       labelText: "Project Goal",
                     ),
