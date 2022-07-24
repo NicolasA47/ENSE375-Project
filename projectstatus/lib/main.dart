@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
@@ -30,118 +29,177 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.blueGrey,
+        primarySwatch: Colors.teal,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page',),
+      home: MyHomePage(
+        title: 'Flutter Demo Home Page',
+      ),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required String title,}) : super(key: key);
+  MyHomePage({
+    Key? key,
+    required String title,
+  }) : super(key: key);
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
-  updateState(){
-    setState(() {
-      
-    });
+  updateState() {
+    setState(() {});
   }
+
+  MetricModel defaultMetric = MetricModel(
+      projectGoal: "Default Project Goal",
+      desc: ["Default", "Default", "Default", "Default"],
+      votes: [0, 0, 0, 0],
+      statusColor: Color(0xFF388E3C));
   @override
-    void initState(){
-      super.initState();
-      metricList = [
-        MetricModel(projectGoal: "Total Number Of Defects", desc: <String>[
-          "The number of defects are well below where expected",
-          "The number of defects are about where we expect",
-          "The number of defects are slightly above what is expected",
-          "The number of defects greatly exceed expectations"], 
-          votes: <int>[3,4,8,9]),
-        MetricModel(projectGoal: "Schedule feasibility", desc: <String>[
-          "The project can be easily completed in the scheduled time",
-          "The project can be completed in the scheduled time with strict time management",
-          "The project may be completed in the scheduled time, but will require crunch",
-          "The project is unlikely to be completed in the scheduled time"], 
-          votes: <int>[7,8,7,2]),
-          MetricModel(projectGoal: "Design progress", desc: <String>[
-          "The design is complete",
-          "The design is mostly complete and no major problems are noted",
-          "The design is incomplete and one major problem is noted with strategies to mitigate",
-          "The design is incomplete, has several major problems with no plans to mitigate"], 
-          votes: <int>[11,6,6,1]),
-          MetricModel(projectGoal: "Implementation progress", desc: <String>[
-          "The implementation is ahead of schedule",
-          "The implementation is on schedule",
-          "The implementation is slightly behind schedule",
-          "The implementation is far behind schedule"], 
-          votes: <int>[5,6,5,6]),
-          MetricModel(projectGoal: "Integration progress", desc: <String>[
-          "No major integration problems have been detected",
-          "Minor integration problems have been detected",
-          "At least one major integration problem has been detected, with plans to remedy",
-          "Multiple major integration problems have been detected, with no plans to remedy"], 
-          votes: <int>[9,8,7,0])
-        ];
-    }
+  void initState() {
+    super.initState();
+    metricList = [
+      MetricModel(projectGoal: "Total Number Of Defects", desc: <String>[
+        "The number of defects are well below where expected",
+        "The number of defects are about where we expect",
+        "The number of defects are slightly above what is expected",
+        "The number of defects greatly exceed expectations"
+      ], votes: <int>[
+        3,
+        4,
+        8,
+        9
+      ]),
+      MetricModel(projectGoal: "Schedule feasibility", desc: <String>[
+        "The project can be easily completed in the scheduled time",
+        "The project can be completed in the scheduled time with strict time management",
+        "The project may be completed in the scheduled time, but will require crunch",
+        "The project is unlikely to be completed in the scheduled time"
+      ], votes: <int>[
+        7,
+        8,
+        7,
+        2
+      ]),
+      MetricModel(projectGoal: "Design progress", desc: <String>[
+        "The design is complete",
+        "The design is mostly complete and no major problems are noted",
+        "The design is incomplete and one major problem is noted with strategies to mitigate",
+        "The design is incomplete, has several major problems with no plans to mitigate"
+      ], votes: <int>[
+        11,
+        6,
+        6,
+        1
+      ]),
+      MetricModel(projectGoal: "Implementation progress", desc: <String>[
+        "The implementation is ahead of schedule",
+        "The implementation is on schedule",
+        "The implementation is slightly behind schedule",
+        "The implementation is far behind schedule"
+      ], votes: <int>[
+        5,
+        6,
+        5,
+        6
+      ]),
+      MetricModel(projectGoal: "Integration progress", desc: <String>[
+        "No major integration problems have been detected",
+        "Minor integration problems have been detected",
+        "At least one major integration problem has been detected, with plans to remedy",
+        "Multiple major integration problems have been detected, with no plans to remedy"
+      ], votes: <int>[
+        9,
+        8,
+        7,
+        0
+      ])
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
-      
     return Scaffold(
         appBar: AppBar(
           title: const Text("Risk Management"),
         ),
-        body: (
-           Column(
-            children: [
-              Row(children: [
-              const SizedBox(child: Text("Overall Risk Status")),
-              Expanded(
-                flex: 15,
-                child: SizedBox(
-                  child: Icon(
-                    Icons.circle,
-                    color: totalRiskColor = totalRisk(),
-                    size: 50,
+        body: (Column(
+          children: [
+            SizedBox(
+              width: (MediaQuery.of(context).size.width) * 0.55,
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 50,
+                    child: SizedBox(
+                      child: Row(
+                        children: [
+                          const Text(
+                            "Project Status",
+                            textScaleFactor: 2,
+                          ),
+                          Icon(
+                            Icons.circle,
+                            color: totalRiskColor = totalRisk(),
+                            size: 100,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              TextButton(
-                style: ButtonStyle(
-                  overlayColor: MaterialStateProperty.resolveWith<Color?>(
-                    (Set<MaterialState> states) {
-                      if (states.contains(MaterialState.focused)) {
-                        return Colors.red;
-                      }
-                      return null; // Defer to the widget's default.
-                    }
+                  const Expanded(
+                    flex: 40,
+                    child: SizedBox(),
                   ),
-                ),
-                onPressed: (() => { metricList.add(MetricModel(projectGoal: "Default Project Goal", desc: ["Default","Default","Default","Default"], votes: [0,0,0,0],statusColor: Color(0xFF388E3C))), updateState()}),
-                child: const Text('ADD GOAL'),
+                  Expanded(
+                    flex: 10,
+                    child: TextButton(
+                      onPressed: () =>
+                          setState(() => metricList.add(defaultMetric)),
+                      child: const Text('ADD GOAL'),
+                    ),
+                  ),
+                ],
               ),
-              ],),
-              Expanded(
-              child: 
-              ListView.builder(
-                itemCount: metricList.length,
-                itemBuilder: (context, index){
-                  return Card(
-                    child: Column(children: [
-                      goalContainer(updateParent: updateState,metricIndex: index, metric: metricList[index], metricList: metricList),
-                    ],),
-                  );
-                }
-                )
-              ),
-              
-            ],
-          )
-        ));
+            ),
+            Expanded(
+                child: ListView.builder(
+                    itemCount: metricList.length,
+                    itemBuilder: (context, index) {
+                      return Card(
+                        child: Column(
+                          children: [
+                            goalContainer(
+                                updateParent: updateState,
+                                metricIndex: index,
+                                metric: metricList[index],
+                                metricList: metricList),
+                            // deleteButton(metricList[index])
+                          ],
+                        ),
+                      );
+                    })),
+          ],
+        )));
+  }
+
+  Widget deleteButton(MetricModel metric) {
+    return TextButton(
+      style: ButtonStyle(
+        overlayColor: MaterialStateProperty.resolveWith<Color?>(
+            (Set<MaterialState> states) {
+          if (states.contains(MaterialState.focused)) {
+            return Colors.red;
+          }
+          return null; // Defer to the widget's default.
+        }),
+      ),
+      onPressed: () => setState(() => {metricList.remove(metric)}),
+      child: const Text('DELETE'),
+    );
   }
 }
 
@@ -150,41 +208,39 @@ class goalContainer extends StatefulWidget {
   int metricIndex;
   MetricModel metric;
   List<MetricModel> metricList;
-  goalContainer({Key? key,required this.updateParent(),required this.metricIndex, required this.metric, required this.metricList}) : super(key: key);
+  goalContainer(
+      {Key? key,
+      required this.updateParent(),
+      required this.metricIndex,
+      required this.metric,
+      required this.metricList})
+      : super(key: key);
 
   @override
   State<goalContainer> createState() => _goalContainerState();
 }
 
 class _goalContainerState extends State<goalContainer> {
-  TextEditingController projectGoalName = TextEditingController();
-  void updateFieldValue() {
-      setState(() {
-        widget.metric.projectGoal = projectGoalName.text;
-      });
-    }
-
-  @override
-  void initState() {
-    super.initState();
-    projectGoalName = TextEditingController(text: widget.metric.projectGoal);
-    
-  }
-
-  updateState(){
-    setState(() {
-      
-    });
+  updateState() {
+    setState(() {});
     widget.updateParent();
   }
 
   @override
   Widget build(BuildContext context) {
-  widget.metric.statusColor = getStatusColor(widget.metric.votes);
+    widget.metric.statusColor = getStatusColor(widget.metric.votes);
     return Center(
       child: SizedBox(
         width: (MediaQuery.of(context).size.width) * 0.55,
         child: GFAccordion(
+          titlePadding: const EdgeInsets.all(25),
+          textStyle: const TextStyle(color: Color(0xFFD8D8D8)),
+          contentPadding: const EdgeInsets.all(25),
+          expandedTitleBackgroundColor: const Color(0xFFA1CDEB),
+          collapsedTitleBackgroundColor: const Color(0xFFA4F1DA),
+          contentBackgroundColor: const Color(0xFFA4F1DA),
+          titleBorderRadius: const BorderRadius.all(Radius.circular(15)),
+          contentBorderRadius: const BorderRadius.all(Radius.circular(15)),
           collapsedIcon: const Icon(Icons.arrow_left_rounded),
           expandedIcon: Transform.rotate(
               angle: -90 * pi / 180,
@@ -195,7 +251,8 @@ class _goalContainerState extends State<goalContainer> {
                 flex: 45,
                 child: SizedBox(
                   child: TextFormField(
-                    controller: projectGoalName,
+                    initialValue:
+                        metricList.elementAt(widget.metricIndex).projectGoal,
                     decoration: const InputDecoration(
                       labelText: "Project Goal",
                     ),
@@ -228,11 +285,12 @@ class _goalContainerState extends State<goalContainer> {
               children: [
                 for (int i = 0; i < 4; i++)
                   SubGoalContainer(
-                      metricIndex: widget.metricIndex,
-                      index: i,
-                      description: widget.metric.desc[i],
-                      voteCount: widget.metric.votes[i],
-                      updateParent: updateState,)
+                    metricIndex: widget.metricIndex,
+                    index: i,
+                    description: widget.metric.desc[i],
+                    voteCount: widget.metric.votes[i],
+                    updateParent: updateState,
+                  )
               ],
             ),
           ),
@@ -240,8 +298,6 @@ class _goalContainerState extends State<goalContainer> {
       ),
     );
   }
-
-  
 }
 
 class SubGoalContainer extends StatefulWidget {
@@ -271,9 +327,12 @@ class _SubGoalContainerState extends State<SubGoalContainer> {
     setState(() {
       widget.description = desc.text;
       widget.voteCount = int.parse(votes.text);
-      metricList.elementAt(widget.metricIndex).votes[widget.index] = widget.voteCount;
-      metricList.elementAt(widget.metricIndex).desc[widget.index] = widget.description;
-      metricList.elementAt(widget.metricIndex).statusColor = getStatusColor(metricList.elementAt(widget.metricIndex).votes);
+      metricList.elementAt(widget.metricIndex).votes[widget.index] =
+          widget.voteCount;
+      metricList.elementAt(widget.metricIndex).desc[widget.index] =
+          widget.description;
+      metricList.elementAt(widget.metricIndex).statusColor =
+          getStatusColor(metricList.elementAt(widget.metricIndex).votes);
       totalRiskColor = totalRisk();
       widget.updateParent();
       print(metricList.elementAt(widget.metricIndex).statusColor);
@@ -293,16 +352,14 @@ class _SubGoalContainerState extends State<SubGoalContainer> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child:
-      Row(
+      child: Row(
         children: [
           Expanded(
             flex: 65,
             child: SizedBox(
                 child: TextFormField(
               controller: desc,
-              decoration: const InputDecoration(
-              ),
+              decoration: const InputDecoration(),
             )),
           ),
           Expanded(
@@ -360,9 +417,9 @@ Color getStatusColor(List<int> voteList) {
   return statusColor;
 }
 
-Color totalRisk(){
+Color totalRisk() {
   double totalRisk = 0;
-  for (int i = 0; i < metricList.length; i++){
+  for (int i = 0; i < metricList.length; i++) {
     totalRisk += calculateRisk(metricList[i].votes);
   }
   totalRisk /= metricList.length;
@@ -377,7 +434,7 @@ Color totalRisk(){
   return statusColor;
 }
 
-double calculateRisk(List<int> voteList){
+double calculateRisk(List<int> voteList) {
   int totalVotes = 0;
   double riskLevel = 0;
 
