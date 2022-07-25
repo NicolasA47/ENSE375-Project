@@ -30,8 +30,15 @@ void main() {
     expect(find.text('Implementation progress'), findsOneWidget);
     expect(find.text('Integration progress'), findsOneWidget);
     // expect(find.byType(TextButton), findsOneWidget);
+  });
 
+  testWidgets('Accordion expands showing all risk levels',
+      (WidgetTester tester) async {
+    tester.binding.window.devicePixelRatioTestValue = 1.0;
+    tester.binding.window.physicalSizeTestValue = const Size(1920, 1080);
+    // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());
+
     await tester.tap(find.byType(GFAccordion).first);
     await tester.pump();
 
