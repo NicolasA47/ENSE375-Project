@@ -53,11 +53,6 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {});
   }
 
-  MetricModel defaultMetric = MetricModel(
-      projectGoal: "Default Project Goal",
-      desc: ["Default", "Default", "Default", "Default"],
-      votes: [0, 0, 0, 0],
-      statusColor: Color(0xFF388E3C));
   @override
   void initState() {
     super.initState();
@@ -159,7 +154,10 @@ class _MyHomePageState extends State<MyHomePage> {
                       flex: 10,
                       child: TextButton(
                         onPressed: () =>
-                            setState(() => metricList.add(defaultMetric)),
+                            setState(() => metricList.add(MetricModel(projectGoal: "Default Project Metric",
+                             desc: ["Default", "Default", "Default", "Default"],
+                             votes: [0,0,0,0],
+                             statusColor: Colors.blueGrey))),
                         child: const Text('ADD METRIC'),
                       ),
                     ),
