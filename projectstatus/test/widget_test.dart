@@ -19,7 +19,7 @@ void main() {
 
     await tester.pumpWidget(const MyApp());
 
-    expect(find.text('Project Status'), findsOneWidget);
+    expect(find.text('Overall Status'), findsOneWidget);
     expect(find.byType(goalContainer), findsNWidgets(5));
     expect(find.byType(TextButton), findsOneWidget);
     expect(find.byIcon(Icons.circle), findsNWidgets(6));
