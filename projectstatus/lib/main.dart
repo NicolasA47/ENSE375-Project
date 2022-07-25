@@ -132,23 +132,21 @@ class _MyHomePageState extends State<MyHomePage> {
               width: (MediaQuery.of(context).size.width) * 0.55,
               child: Row(
                 children: [
-                  Expanded(
-                    flex: 50,
-                    child: SizedBox(
-                      child: Row(
-                        children: [
-                          const Text(
+                  const Expanded(
+                    flex: 20,
+                    child: Text(
                             "Project Status",
                             textScaleFactor: 2,
                           ),
-                          Icon(
+                         
+                  ),
+                  Expanded(
+                    flex: 20,
+                    child:  Icon(
                             Icons.circle,
                             color: totalRiskColor = totalRisk(),
                             size: 100,
                           ),
-                        ],
-                      ),
-                    ),
                   ),
                   const Expanded(
                     flex: 40,
