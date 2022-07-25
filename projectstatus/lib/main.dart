@@ -227,6 +227,7 @@ class _goalContainerState extends State<goalContainer> {
       child: SizedBox(
         width: (MediaQuery.of(context).size.width) * 0.55,
         child: GFAccordion(
+          key: Key('accordion${widget.metricIndex}'),
           titlePadding: const EdgeInsets.all(25),
           textStyle: const TextStyle(color: Color(0xFFD8D8D8)),
           contentPadding: const EdgeInsets.all(25),
