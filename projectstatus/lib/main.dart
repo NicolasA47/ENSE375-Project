@@ -129,38 +129,41 @@ class _MyHomePageState extends State<MyHomePage> {
         body: (Column(
           children: [
             SizedBox(
-              width: (MediaQuery.of(context).size.width) * 0.55,
-              child: Row(
-                children: [
-                  const Expanded(
-                    flex: 20,
-                    child: Text(
-                            "Project Status",
-                            textScaleFactor: 2,
-                          ),
-                         
-                  ),
-                  Expanded(
-                    flex: 20,
-                    child:  Icon(
-                            Icons.circle,
-                            color: totalRiskColor = totalRisk(),
-                            size: 100,
-                          ),
-                  ),
-                  const Expanded(
-                    flex: 40,
-                    child: SizedBox(),
-                  ),
-                  Expanded(
-                    flex: 10,
-                    child: TextButton(
-                      onPressed: () =>
-                          setState(() => metricList.add(defaultMetric)),
-                      child: const Text('ADD GOAL'),
+              width: (MediaQuery.of(context).size.width) * 0.53,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 30),
+                child: Row( 
+                  children: [
+                    const Expanded(
+                      flex: 20,
+                      child: Text(
+                              "Project Status",
+                              textScaleFactor: 2,
+                            ),
+                           
                     ),
-                  ),
-                ],
+                    Expanded(
+                      flex: 1,
+                      child:  Icon(
+                              Icons.circle,
+                              color: totalRiskColor = totalRisk(),
+                              size: 75,
+                            ),
+                    ),
+                    const Expanded(
+                      flex: 59,
+                      child: SizedBox(),
+                    ),
+                    Expanded(
+                      flex: 10,
+                      child: TextButton(
+                        onPressed: () =>
+                            setState(() => metricList.add(defaultMetric)),
+                        child: const Text('ADD GOAL'),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             Expanded(
