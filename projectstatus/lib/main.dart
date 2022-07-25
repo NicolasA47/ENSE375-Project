@@ -124,6 +124,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          centerTitle: true,
           title: const Text("Risk Management"),
         ),
         body: (Column(
@@ -137,7 +138,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     const Expanded(
                       flex: 20,
                       child: Text(
-                        "Project Status",
+                        "Overall Status",
                         textScaleFactor: 2,
                       ),
                     ),
@@ -159,7 +160,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: TextButton(
                         onPressed: () =>
                             setState(() => metricList.add(defaultMetric)),
-                        child: const Text('ADD GOAL'),
+                        child: const Text('ADD METRIC'),
                       ),
                     ),
                   ],
@@ -250,7 +251,7 @@ class _goalContainerState extends State<goalContainer> {
                     initialValue:
                         metricList.elementAt(widget.metricIndex).projectGoal,
                     decoration: const InputDecoration(
-                      labelText: "Project Goal",
+                      labelText: "Metric",
                     ),
                   ),
                 ),
@@ -261,7 +262,7 @@ class _goalContainerState extends State<goalContainer> {
               ),
               const Expanded(
                 flex: 15,
-                child: SizedBox(child: Text("Metric Status")),
+                child: SizedBox(child: Text("Status")),
               ),
               Expanded(
                 flex: 15,
