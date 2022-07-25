@@ -16,10 +16,9 @@ void main() {
   testWidgets('Default start working test', (WidgetTester tester) async {
     tester.binding.window.devicePixelRatioTestValue = 1.0;
     tester.binding.window.physicalSizeTestValue = const Size(1920, 1080);
-    // Build our app and trigger a frame.
+    
     await tester.pumpWidget(const MyApp());
 
-    // Verify that our counter starts at 0.
     expect(find.text('Project Status'), findsOneWidget);
     expect(find.byType(goalContainer), findsNWidgets(5));
     expect(find.byType(TextButton), findsOneWidget);
@@ -29,18 +28,7 @@ void main() {
     expect(find.text('Design progress'), findsOneWidget);
     expect(find.text('Implementation progress'), findsOneWidget);
     expect(find.text('Integration progress'), findsOneWidget);
-    // expect(find.byType(TextButton), findsOneWidget);
 
-
-    // expect(find.text('1'), findsNothing);
-
-    // // Tap the '+' icon and trigger a frame.
-    // await tester.tap(find.byIcon(Icons.add));
-    // await tester.pump();
-
-    // // Verify that our counter has incremented.
-    // expect(find.text('0'), findsNothing);
-    // expect(find.text('1'), findsOneWidget);
   });
 
   testWidgets('Add button working test', (WidgetTester tester) async {
@@ -53,6 +41,21 @@ void main() {
     await tester.tap(find.byType(TextButton));
     await tester.pump();
     expect(find.byType(goalContainer), findsNWidgets(6));
+  });
+
+  testWidgets('Open and closed accordion', (WidgetTester tester) async {
+    tester.binding.window.devicePixelRatioTestValue = 1.0;
+    tester.binding.window.physicalSizeTestValue = const Size(1920, 1080);
+
+    await tester.pumpWidget(const MyApp());
+
+    await tester.tap(find.byType(GFAccordion).first);
+    await tester.pump();
+    expect(find.byType(SubGoalContainer), findsNWidgets(4));
+    await tester.enterText(find.byKey(const Key('subGoalVotes')).last, "100");
+    await tester.tap(find.byKey(const Key('closedArrow')), warnIfMissed: false);
+    await tester.pump();
+    expect(find.byType(SubGoalContainer), findsNothing);
   });
 
   testWidgets('Change votes sub goal risk to red', (WidgetTester tester) async {
@@ -138,38 +141,36 @@ void main() {
     expect((tester.firstWidget(find.byKey(const Key('totalRiskCircle'))) as Icon).color, Colors.yellow);
   });
 
-  // testWidgets('Change total risk circle to red', (WidgetTester tester) async {
-  //   tester.binding.window.devicePixelRatioTestValue = 1.0;
-  //   tester.binding.window.physicalSizeTestValue = const Size(1920, 1080);
+  testWidgets('Change total risk circle to red', (WidgetTester tester) async {
+    tester.binding.window.devicePixelRatioTestValue = 1.0;
+    tester.binding.window.physicalSizeTestValue = const Size(1920, 1080);
 
-  //   await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(const MyApp());
 
-  //   await tester.tap(find.byType(GFAccordion).first);
-  //   await tester.pump();
-  //   expect(find.byType(SubGoalContainer), findsNWidgets(4));
-  //   await tester.enterText(find.byKey(const Key('closedArrow')).last, "100");
-  //   await tester.pump();
-  //   expect(find.text("100"), findsOneWidget);
-  //   await tester.tap(find.byType(GFAccordion).first);
-  //   await tester.pump();
+    await tester.tap(find.byType(GFAccordion).first);
+    await tester.pump();
+    expect(find.byType(SubGoalContainer), findsNWidgets(4));
+    await tester.enterText(find.byKey(const Key('subGoalVotes')).last, "100");
+    await tester.tap(find.byKey(const Key('closedArrow')), warnIfMissed: false);
+    await tester.pump();
+    expect(find.byType(SubGoalContainer), findsNothing);
 
-  //   await tester.tap(find.byType(GFAccordion).last);
-  //   await tester.pump();
-  //   expect(find.byType(SubGoalContainer), findsNWidgets(8));
-  //   await tester.enterText(find.byKey(const Key('subGoalVotes')).last, "100");
-  //   await tester.pump();
-  //   expect(find.text("100"), findsNWidgets(2));
-  //   await tester.tap(find.byType(GFAccordion).last);
-  //   await tester.pump();
+    await tester.tap(find.byType(GFAccordion).last);
+    await tester.pump();
+    expect(find.byType(SubGoalContainer), findsNWidgets(4));
+    await tester.enterText(find.byKey(const Key('subGoalVotes')).last, "100");
+    await tester.tap(find.byKey(const Key('closedArrow')), warnIfMissed: false);
+    await tester.pump();
+    expect(find.byType(SubGoalContainer), findsNothing);
 
-  //   await tester.tap(find.byType(GFAccordion).at(2));
-  //   await tester.pump();
-  //   expect(find.byType(SubGoalContainer), findsNWidgets(12));
-  //   await tester.enterText(find.byKey(const Key('subGoalVotes')).last, "100");
-  //   await tester.pump();
-  //   expect(find.text("100"), findsNWidgets(3));
-  //   await tester.tap(find.byType(GFAccordion).at(2));
-  //   await tester.pump();
 
-  // });
+    await tester.tap(find.byKey(const Key('accordion2')));
+    await tester.pump();
+    expect(find.byType(SubGoalContainer), findsNWidgets(4));
+    await tester.enterText(find.byKey(const Key('subGoalVotes')).last, "100"); 
+    await tester.tap(find.byKey(const Key('closedArrow')), warnIfMissed: false);
+    await tester.pump();
+    expect(find.byType(SubGoalContainer), findsNothing);
+    expect((tester.firstWidget(find.byKey(const Key('totalRiskCircle'))) as Icon).color, Colors.red);
+  });
 }
