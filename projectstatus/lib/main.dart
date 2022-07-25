@@ -132,23 +132,22 @@ class _MyHomePageState extends State<MyHomePage> {
               width: (MediaQuery.of(context).size.width) * 0.53,
               child: Padding(
                 padding: const EdgeInsets.only(top: 30),
-                child: Row( 
+                child: Row(
                   children: [
                     const Expanded(
                       flex: 20,
                       child: Text(
-                              "Project Status",
-                              textScaleFactor: 2,
-                            ),
-                           
+                        "Project Status",
+                        textScaleFactor: 2,
+                      ),
                     ),
                     Expanded(
                       flex: 1,
-                      child:  Icon(
-                              Icons.circle,
-                              color: totalRiskColor = totalRisk(),
-                              size: 75,
-                            ),
+                      child: Icon(
+                        Icons.circle,
+                        color: totalRiskColor = totalRisk(),
+                        size: 75,
+                      ),
                     ),
                     const Expanded(
                       flex: 59,
@@ -329,7 +328,6 @@ class _SubGoalContainerState extends State<SubGoalContainer> {
           getStatusColor(metricList.elementAt(widget.metricIndex).votes);
       totalRiskColor = totalRisk();
       widget.updateParent();
-      print(metricList.elementAt(widget.metricIndex).statusColor);
     });
   }
 
@@ -352,6 +350,7 @@ class _SubGoalContainerState extends State<SubGoalContainer> {
             flex: 65,
             child: SizedBox(
                 child: TextFormField(
+              key: Key("desc${widget.index}"),
               controller: desc,
               decoration: const InputDecoration(),
             )),
