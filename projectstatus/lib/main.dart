@@ -145,6 +145,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       flex: 1,
                       child: Icon(
                         Icons.circle,
+                        key: const Key('totalRiskCircle'),
                         color: totalRiskColor = totalRisk(),
                         size: 75,
                       ),
@@ -237,6 +238,7 @@ class _goalContainerState extends State<goalContainer> {
           collapsedIcon: const Icon(Icons.arrow_left_rounded),
           expandedIcon: Transform.rotate(
               angle: -90 * pi / 180,
+              key: const Key('closedArrow'),
               child: const Icon(Icons.arrow_left_rounded)),
           titleChild: Row(
             children: [
@@ -265,6 +267,7 @@ class _goalContainerState extends State<goalContainer> {
                 child: SizedBox(
                   child: Icon(
                     Icons.circle,
+                    key: const Key('goalContainerColor'),
                     color: widget.metric.statusColor,
                     size: 50,
                   ),
@@ -360,6 +363,7 @@ class _SubGoalContainerState extends State<SubGoalContainer> {
               child: SizedBox(
                 child: TextFormField(
                   controller: votes,
+                  key: const Key('subGoalVotes'),
                   keyboardType: TextInputType.number,
                   inputFormatters: <TextInputFormatter>[
                     FilteringTextInputFormatter.digitsOnly
