@@ -64,29 +64,6 @@ void main() {
     expect(find.text("editing desc"), findsOneWidget);
   });
 
-  testWidgets('Change description persists after accordion open & close',
-      (WidgetTester tester) async {
-    tester.binding.window.devicePixelRatioTestValue = 1.0;
-    tester.binding.window.physicalSizeTestValue = const Size(1920, 1080);
-
-    await tester.pumpWidget(const MyApp());
-    await tester.tap(find.byType(GFAccordion).first);
-    await tester.pump();
-
-    expect(find.text("The number of defects are well below where expected"),
-        findsOneWidget);
-
-    var descInputField = find.byKey(Key("desc0"));
-    await tester.enterText(descInputField, "editing desc");
-    await tester.pump();
-    expect(find.text("editing desc"), findsOneWidget);
-    await tester.tap(find.byType(GFAccordion).first);
-    await tester.pump();
-    await tester.tap(find.byType(GFAccordion).first);
-    await tester.pump();
-    expect(find.text("editing desc"), findsOneWidget);
-  });
-
   testWidgets('Add button working test', (WidgetTester tester) async {
     tester.binding.window.devicePixelRatioTestValue = 1.0;
     tester.binding.window.physicalSizeTestValue = const Size(1920, 1080);
