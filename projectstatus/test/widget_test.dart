@@ -13,10 +13,10 @@ import 'package:getwidget/components/accordion/gf_accordion.dart';
 import 'package:projectstatus/main.dart';
 
 void main() {
-  testWidgets('5 goal containers on load', (WidgetTester tester) async {
+  testWidgets('Default Starting Widgets', (WidgetTester tester) async {
     tester.binding.window.devicePixelRatioTestValue = 1.0;
     tester.binding.window.physicalSizeTestValue = const Size(1920, 1080);
-
+    print("Default Starting Widgets");
     await tester.pumpWidget(const MyApp());
 
     expect(find.text('Project Status'), findsOneWidget);
@@ -28,7 +28,6 @@ void main() {
     expect(find.text('Design progress'), findsOneWidget);
     expect(find.text('Implementation progress'), findsOneWidget);
     expect(find.text('Integration progress'), findsOneWidget);
-    // expect(find.byType(TextButton), findsOneWidget);
   });
 
   testWidgets('Accordion expands showing all risk levels',
