@@ -131,7 +131,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Row(
                   children: [
                     const Expanded(
-                      flex: 20,
+                      flex: 5,
                       child: Text(
                         "Overall Status",
                         textScaleFactor: 2,
@@ -147,17 +147,23 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                     const Expanded(
-                      flex: 59,
+                      flex: 5,
                       child: SizedBox(),
                     ),
                     Expanded(
-                      flex: 10,
+                      flex: 5,
                       child: TextButton(
-                        onPressed: () =>
-                            setState(() => metricList.add(MetricModel(projectGoal: "Default Project Metric",
-                             desc: ["Default", "Default", "Default", "Default"],
-                             votes: [0,0,0,0],
-                             statusColor: Colors.blueGrey))),
+                        onPressed: () => setState(() => metricList.add(
+                            MetricModel(
+                                projectGoal: "Default Project Metric",
+                                desc: [
+                                  "Default",
+                                  "Default",
+                                  "Default",
+                                  "Default"
+                                ],
+                                votes: [0, 0, 0, 0],
+                                statusColor: Colors.blueGrey))),
                         child: const Text('ADD METRIC'),
                       ),
                     ),
@@ -223,71 +229,80 @@ class _goalContainerState extends State<goalContainer> {
   Widget build(BuildContext context) {
     widget.metric.statusColor = getStatusColor(widget.metric.votes);
     return Center(
-      child: SizedBox(
-        width: (MediaQuery.of(context).size.width) * 0.55,
-        child: GFAccordion(
-          key: Key('accordion${widget.metricIndex}'),
-          titlePadding: const EdgeInsets.all(25),
-          textStyle: const TextStyle(color: Color(0xFFD8D8D8)),
-          contentPadding: const EdgeInsets.all(25),
-          expandedTitleBackgroundColor: const Color(0xFFA1CDEB),
-          collapsedTitleBackgroundColor: const Color(0xFF9FC5CC),
-          contentBackgroundColor: const Color(0xFF9FC5CC),
-          titleBorderRadius: const BorderRadius.all(Radius.circular(15)),
-          contentBorderRadius: const BorderRadius.all(Radius.circular(15)),
-          collapsedIcon: const Icon(Icons.arrow_left_rounded),
-          expandedIcon: Transform.rotate(
-              angle: -90 * pi / 180,
-              key: const Key('closedArrow'),
-              child: const Icon(Icons.arrow_left_rounded)),
-          titleChild: Row(
-            children: [
-              Expanded(
-                flex: 45,
-                child: SizedBox(
-                  child: TextFormField(
-                    initialValue:
-                        metricList.elementAt(widget.metricIndex).projectGoal,
-                    decoration: const InputDecoration(
-                      labelText: "Metric",
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SizedBox(
+          width: (MediaQuery.of(context).size.width) * 0.55,
+          child: Material(
+            borderRadius: BorderRadius.circular(20),
+            elevation: 5,
+            shadowColor: Colors.black,
+            child: GFAccordion(
+              key: Key('accordion${widget.metricIndex}'),
+              margin: const EdgeInsets.all(4),
+              titlePadding: const EdgeInsets.all(25),
+              contentPadding: const EdgeInsets.all(25),
+              expandedTitleBackgroundColor: const Color(0xFFA1CDEB),
+              collapsedTitleBackgroundColor: const Color(0xFF9FC5CC),
+              contentBackgroundColor: const Color(0xFF9FC5CC),
+              titleBorderRadius: const BorderRadius.all(Radius.circular(15)),
+              contentBorderRadius: const BorderRadius.all(Radius.circular(15)),
+              collapsedIcon: const Icon(Icons.arrow_left_rounded),
+              expandedIcon: Transform.rotate(
+                  angle: -90 * pi / 180,
+                  key: const Key('closedArrow'),
+                  child: const Icon(Icons.arrow_left_rounded)),
+              titleChild: Row(
+                children: [
+                  Expanded(
+                    flex: 45,
+                    child: SizedBox(
+                      child: TextFormField(
+                        initialValue: metricList
+                            .elementAt(widget.metricIndex)
+                            .projectGoal,
+                        decoration: const InputDecoration(
+                          labelText: "Metric",
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
-              const Expanded(
-                flex: 25,
-                child: SizedBox(),
-              ),
-              const Expanded(
-                flex: 15,
-                child: SizedBox(child: Text("Status")),
-              ),
-              Expanded(
-                flex: 15,
-                child: SizedBox(
-                  child: Icon(
-                    Icons.circle,
-                    key: const Key('goalContainerColor'),
-                    color: widget.metric.statusColor,
-                    size: 50,
+                  const Expanded(
+                    flex: 25,
+                    child: SizedBox(),
                   ),
+                  const Expanded(
+                    flex: 15,
+                    child: SizedBox(child: Text("Status")),
+                  ),
+                  Expanded(
+                    flex: 15,
+                    child: SizedBox(
+                      child: Icon(
+                        Icons.circle,
+                        key: const Key('goalContainerColor'),
+                        color: widget.metric.statusColor,
+                        size: 50,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              contentChild: SingleChildScrollView(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  children: [
+                    for (int i = 0; i < 4; i++)
+                      SubGoalContainer(
+                        metricIndex: widget.metricIndex,
+                        index: i,
+                        description: widget.metric.desc[i],
+                        voteCount: widget.metric.votes[i],
+                        updateParent: updateState,
+                      )
+                  ],
                 ),
               ),
-            ],
-          ),
-          contentChild: SingleChildScrollView(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              children: [
-                for (int i = 0; i < 4; i++)
-                  SubGoalContainer(
-                    metricIndex: widget.metricIndex,
-                    index: i,
-                    description: widget.metric.desc[i],
-                    voteCount: widget.metric.votes[i],
-                    updateParent: updateState,
-                  )
-              ],
             ),
           ),
         ),
